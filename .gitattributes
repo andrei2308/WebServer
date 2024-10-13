@@ -1,0 +1,9 @@
+# Set the default behavior to automatically normalize line endings
+* text=auto
+
+# Specify the text files that should always have LF line endings
+*.sh text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
