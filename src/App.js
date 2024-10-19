@@ -1,22 +1,37 @@
 import React, { useState } from 'react';
 import './App.css';
 import axios from 'axios';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import UserPage from './UserPage';  // Import UserPage component
+
 function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [isLogin, setIsLogin] = useState(true);
+  const navigate = useNavigate();
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/api/login', { username, password });
       setMessage('Login successful!');
-      console.log(response.data.token);
+      console.log("Token",response.data.token);
+  
+      // Store the token in localStorage
+      localStorage.setItem('token', response.data.token);
+  
+      await sleep(1500);
+      setMessage('Logging in...');
+      await sleep(2000);
+  
+      // Redirect to /api/user after successful login
+      navigate('/api/user');
+      
     } catch (error) {
-      setMessage('Login failed. ' + (error.response.data.message || error.message));
+      setMessage('Login failed. ' + (error.response?.data.message || error.message));
     }
   };
 
@@ -27,7 +42,7 @@ function App() {
       setMessage('Registration successful! Please login.');
       setIsLogin(true);
     } catch (error) {
-      setMessage('Registration failed. ' + (error.response.data.message || error.message));
+      setMessage('Registration failed. ' + (error.response?.data.message || error.message));
     }
   };
 
@@ -68,4 +83,16 @@ function App() {
   );
 }
 
-export default App;
+// Routing component
+function AppRoutes() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/api/user" element={<UserPage />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default AppRoutes;
