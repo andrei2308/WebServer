@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 
 function UserPage() {
   const [userData, setUserData] = useState(null);
@@ -34,12 +34,16 @@ function UserPage() {
   if (!userData) {
     return <div><p>Loading user data...</p></div>;
   }
-
+  const handleLogout= ()=>{
+    localStorage.removeItem('token')
+    navigate("/")
+  }
   return (
     <div>
       <h2>Welcome, {userData.username}!</h2>
       <p>Email: {userData.email}</p>
-      <p>User ID: {userData.id}</p>
+      <p>User ID: {userData._id}</p>
+      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 }
