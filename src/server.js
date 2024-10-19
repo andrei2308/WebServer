@@ -3,7 +3,7 @@ const mongodb = require('mongoose');
 const express = require('express');
 const cors = require('cors');
 const bodyparser = require("body-parser")
-
+const helmet = require('helmet')
 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -13,7 +13,18 @@ const app = express()
 app.use(cors());
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
-
+app.use(helmet({
+  frameguard: { 
+    action: 'deny'
+  },
+  contentSecurityPolicy: { 
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ['style.com'],
+    }
+  },
+  dnsPrefetchControl: false 
+}))
 // Connect to MongoDB
 mongodb.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
